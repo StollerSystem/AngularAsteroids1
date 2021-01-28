@@ -1,27 +1,30 @@
-function Laser(spos, svel, angle) {  
+import * as p5 from 'p5';
+import Entity from './entity';
+
+export default function Laser(spos, svel, angle, g, rgbColor2) {  
   
-  Entity.call(this, spos.x, spos.y, 4);
-  this.pos = createVector(spos.x, spos.y);
+  Entity.call(this, spos.x, spos.y, 4, g);
+  this.pos = g.createVector(spos.x, spos.y);
   this.vel = p5.Vector.fromAngle(angle);
   this.vel.mult(10);
   this.vel.add(svel);  
 
   this.render = function () {
     // laser bolt
-    push();
-    var trans = random(1, .8)
-    stroke(`rgba(${rgbColor2[0]},${rgbColor2[1]},${rgbColor2[2]},${trans})`);
-    strokeWeight(this.r*1.5);
-    point(this.pos.x, this.pos.y);
-    pop();
+    g.push();
+    var trans = g.random(1, .8)
+    g.stroke(`rgba(${rgbColor2[0]},${rgbColor2[1]},${rgbColor2[2]},${trans})`);
+    g.strokeWeight(this.r*1.5);
+    g.point(this.pos.x, this.pos.y);
+    g.pop();
     // glow effect
-    push();
-    var size = this.r * (random(2, 10))
-    var trans2 = random(.6, .1)
-    stroke(`rgba(${rgbColor2[0]},${rgbColor2[1]},${rgbColor2[2]},${trans2}) `);
-    strokeWeight(size);
-    point(this.pos.x, this.pos.y);
-    pop();
+    g.push();
+    var size = this.r * (g.random(2, 10))
+    var trans2 = g.random(.6, .1)
+    g.stroke(`rgba(${rgbColor2[0]},${rgbColor2[1]},${rgbColor2[2]},${trans2}) `);
+    g.strokeWeight(size);
+    g.point(this.pos.x, this.pos.y);
+    g.pop();
   }
 
   this.playSoundEffect = function (sound) {
@@ -64,10 +67,10 @@ function Laser(spos, svel, angle) {
   }
 
   this.offscreen = function () {
-    if (this.pos.x > width || this.pos.x < 0) {
+    if (this.pos.x > g.width || this.pos.x < 0) {
       return true;
     }
-    if (this.pos.y > height || this.pos.y < 0) {
+    if (this.pos.y > g.height || this.pos.y < 0) {
       return true;
     }
     return false;

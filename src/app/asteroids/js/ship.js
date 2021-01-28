@@ -1,7 +1,8 @@
 import Entity from './entity';
 import { input } from './input';
+import Laser from './laser';
 
-export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title) {
+export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers) {
   Entity.call(this, g.width / 2, g.height / 2, 20, g);
   this.isDestroyed = false;
   this.destroyFrames = 1000;
@@ -41,16 +42,16 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title) {
       return;
     }
     // title = false;
-    var laser = new Laser(scope.pos, scope.vel, scope.heading);
+    var laser = new Laser(scope.pos, scope.vel, scope.heading, g, rgbColor2);
     if (score > 0) {
       score -= 5;
     }
     
     var dustVel = laser.vel.copy();    
-    addDust(scope.pos, dustVel.mult(.5), 4, .045, 2, 5);
+    // addDust(scope.pos, dustVel.mult(.5), 4, .045, 2, 5);
 
-    var effect = laserSoundEffects[floor(random() * laserSoundEffects.length)];
-    laser.playSoundEffect(effect);
+    // var effect = laserSoundEffects[floor(random() * laserSoundEffects.length)];
+    // laser.playSoundEffect(effect);
     lasers.push(laser);
   });
   input.registerAsListener(g.RIGHT_ARROW, function (char, code, press) {

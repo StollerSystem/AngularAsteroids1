@@ -50,14 +50,29 @@ export class AsteroidsComponent implements OnInit {
       }
 
       g.setup = () => {
-        g.createCanvas(g.windowWidth*.9, g.windowHeight*.9);
-        ship = new Ship(g, shieldTime, rgbColor2, rgbColor3, title);
+        g.createCanvas(g.windowWidth * .9, g.windowHeight * .9);
+        ship = new Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers);
       }
 
       g.draw = () => {
+        //updates
+        for (var i = lasers.length - 1; i >= 0; i--) {
+          lasers[i].update();
+          if (lasers[i].offscreen()) {
+            // destroy lasers that go off screen.
+            lasers.splice(i, 1);
+            continue;
+          }
+        }
+
         ship.update();
+
+        // renders
         g.background(0);
         ship.render();
+        for (var i = lasers.length - 1; i >= 0; i--) {
+          lasers[i].render();
+        }
       }
     };
 
