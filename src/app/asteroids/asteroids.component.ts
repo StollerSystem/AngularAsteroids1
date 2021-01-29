@@ -40,6 +40,12 @@ export class AsteroidsComponent implements OnInit {
     const points: any = [200, 100, 50, 25];
     var level: any = 0;
 
+    const addDust = function (pos, vel, n, trans, color, weight, g) {
+      for (var i = 0; i < n; i++) {
+        dust.push(new Dust(pos, vel, trans, color, weight, g, rgbColor1, rgbColor2, rgbColor3));
+      }
+    }
+
 
     const game = (g: any) => {
 
@@ -54,7 +60,7 @@ export class AsteroidsComponent implements OnInit {
 
       g.setup = () => {
         g.createCanvas(g.windowWidth * .9, g.windowHeight * .9);
-        ship = new Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers);
+        ship = new Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers, addDust);
         spawnAsteroids();
       }
 
@@ -135,7 +141,6 @@ export class AsteroidsComponent implements OnInit {
 
         // renders
         g.background(0);
-        ship.render();
         for (var i = 0; i < asteroids.length; i++) {
           asteroids[i].render();
         }
@@ -145,6 +150,7 @@ export class AsteroidsComponent implements OnInit {
         for (var i = dust.length - 1; i >= 0; i--) {
           dust[i].render();
         }
+        ship.render();
       }
 
       const spawnAsteroids = function () {
@@ -153,11 +159,11 @@ export class AsteroidsComponent implements OnInit {
         }
       }
 
-      const addDust = function (pos, vel, n, trans, color, weight, g) {
-        for (var i = 0; i < n; i++) {
-          dust.push(new Dust(pos, vel, trans, color, weight, g, rgbColor1, rgbColor2, rgbColor3));
-        }
-      }
+      // const addDust = function (pos, vel, n, trans, color, weight, g) {
+      //   for (var i = 0; i < n; i++) {
+      //     dust.push(new Dust(pos, vel, trans, color, weight, g, rgbColor1, rgbColor2, rgbColor3));
+      //   }
+      // }
     };
 
     let canvas = new p5(game);

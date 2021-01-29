@@ -3,7 +3,7 @@ import { input } from './input';
 import Laser from './laser';
 // import { addDust } from './dust';
 
-export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers) {
+export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers, addDust) {
   Entity.call(this, g.width / 2, g.height / 2, 20, g);
   this.isDestroyed = false;
   this.destroyFrames = 1000;
@@ -48,8 +48,8 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
       score -= 5;
     }
     
-    // var dustVel = laser.vel.copy();    
-    // addDust(scope.pos, dustVel.mult(.5), 4, .045, 2, 5, g);
+    var dustVel = laser.vel.copy();    
+    addDust(scope.pos, dustVel.mult(.5), 4, .045, 2, 5, g);
 
     // var effect = laserSoundEffects[floor(random() * laserSoundEffects.length)];
     // laser.playSoundEffect(effect);
