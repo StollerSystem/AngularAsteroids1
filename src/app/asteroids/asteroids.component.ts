@@ -65,6 +65,30 @@ export class AsteroidsComponent implements OnInit {
       }
 
       g.draw = () => {
+        // Handles the round loss, destruction of ship and round restart when the
+        // ship contacts an asteroid.
+        for (var i = 0; i < asteroids.length; i++) {
+          
+          if (ship.hits(asteroids[i]) && canPlay) {
+            canPlay = false;
+            var dustVel = p5.Vector.add(ship.vel.mult(0.2), asteroids[i].vel);
+            addDust(ship.pos, dustVel, 15, .005, 3, 3, g);
+            ship.destroy();
+            input.reset();
+            // sounds - need to stop rocket sounds here
+            // ship.playSoundEffect(explosionSoundEffects);
+            // rocketSoundEffects[0].stop();
+            // rocketSoundEffects[1].stop();
+            setTimeout(function () {
+              lives--;
+              if (lives >= 0) {
+                ship = new Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers, addDust);
+                canPlay = true;
+              }
+            }, 3000);
+          }
+          asteroids[i].update();
+        }
         //updates
         for (var i = lasers.length - 1; i >= 0; i--) {
           lasers[i].update();
@@ -115,29 +139,7 @@ export class AsteroidsComponent implements OnInit {
           }
         }
 
-        // Handles the round loss, destruction of ship and round restart when the
-        // ship contacts an asteroid.
-        for (var i = 0; i < asteroids.length; i++) {
-          if (ship.hits(asteroids[i]) && canPlay) {
-            canPlay = false;
-            var dustVel = p5.Vector.add(ship.vel.mult(0.2), asteroids[i].vel);
-            addDust(ship.pos, dustVel, 15, .005, 3, 1, g);
-            ship.destroy();
-            input.reset();
-            // sounds - need to stop rocket sounds here
-            ship.playSoundEffect(explosionSoundEffects);
-            rocketSoundEffects[0].stop();
-            rocketSoundEffects[1].stop();
-            setTimeout(function () {
-              lives--;
-              if (lives >= 0) {
-                ship = new Ship();
-                canPlay = true;
-              }
-            }, 3000);
-          }
-          asteroids[i].update();
-        }
+
 
         // renders
         g.background(0);
@@ -159,11 +161,6 @@ export class AsteroidsComponent implements OnInit {
         }
       }
 
-      // const addDust = function (pos, vel, n, trans, color, weight, g) {
-      //   for (var i = 0; i < n; i++) {
-      //     dust.push(new Dust(pos, vel, trans, color, weight, g, rgbColor1, rgbColor2, rgbColor3));
-      //   }
-      // }
     };
 
     let canvas = new p5(game);

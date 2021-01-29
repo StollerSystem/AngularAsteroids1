@@ -1,6 +1,9 @@
 import Entity from './entity';
 import { input } from './input';
 import Laser from './laser';
+import * as p5 from 'p5';
+import { lineIntersect } from './utility';
+
 // import { addDust } from './dust';
 
 export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers, addDust) {
@@ -42,7 +45,7 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
     if (!press) {
       return;
     }
-    // title = false;
+    title = false;
     var laser = new Laser(scope.pos, scope.vel, scope.heading, g, rgbColor2);
     if (score > 0) {
       score -= 5;
@@ -56,7 +59,7 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
     lasers.push(laser);
   });
   input.registerAsListener(g.RIGHT_ARROW, function (char, code, press) {
-    // title = false;
+    title = false;
     scope.setRotation(press ? 0.08 : 0);
     // if (press) {
     //   rocketSoundEffects[1].play();
@@ -65,7 +68,7 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
     // }
   });
   input.registerAsListener(g.LEFT_ARROW, function (char, code, press) {
-    // title = false;
+    title = false;
     scope.setRotation(press ? -0.08 : 0);
     // if (press) {
     //   rocketSoundEffects[1].play();
@@ -74,7 +77,7 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
     // }
   });
   input.registerAsListener(g.UP_ARROW, function (char, code, press) {
-    // title = false;
+    title = false;
     scope.setAccel(press ? 0.2 : 0);
     // if (press) {
     //   rocketSoundEffects[0].play();
@@ -132,7 +135,7 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
   }
 
   this.hits = function (asteroid) {
-
+    
     // Are shields up?
     if (this.shields > 0) {
       return false;
@@ -152,9 +155,9 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
 
     // Otherwise, we need to check for line intersection
     var vertices = [
-      createVector(-2 / 3 * this.r, this.r).rotate(this.heading),
-      createVector(-2 / 3 * this.r, -this.r).rotate(this.heading),
-      createVector(4 / 3 * this.r, 0).rotate(this.heading)
+      g.createVector(-2 / 3 * this.r, this.r).rotate(this.heading),
+      g.createVector(-2 / 3 * this.r, -this.r).rotate(this.heading),
+      g.createVector(4 / 3 * this.r, 0).rotate(this.heading)
     ];
     for (var i = 0; i < vertices.length; i++) {
       vertices[i] = p5.Vector.add(vertices[i], this.pos);
@@ -182,15 +185,15 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
     if (this.isDestroyed) {      
       // ship debris
       for (var i = 0; i < this.brokenParts.length; i++) {
-        push();
+        g.push();
         let transNum = (1 * ((this.destroyFrames--) / 1000))
         let trans = transNum > 0 ? transNum : 0;
         g.stroke(`rgba(${rgbColor3[0]},${rgbColor3[1]},${rgbColor3[2]},${trans})`);
         var bp = this.brokenParts[i];
         g.translate(bp.pos.x, bp.pos.y);
         g.rotate(bp.heading);
-        line(-this.r / 2, -this.r / 2, this.r / 2, this.r / 2);
-        pop();
+        g.line(-this.r / 2, -this.r / 2, this.r / 2, this.r / 2);
+        g.pop();
       }
     } else {
       //render vapor tail      

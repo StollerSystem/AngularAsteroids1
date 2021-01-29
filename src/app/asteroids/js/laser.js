@@ -1,6 +1,6 @@
 import * as p5 from 'p5';
 import Entity from './entity';
-import { lineIntersect } from './utility'
+import { lineIntersect } from './utility';
 
 export default function Laser(spos, svel, angle, g, rgbColor2) {  
   
