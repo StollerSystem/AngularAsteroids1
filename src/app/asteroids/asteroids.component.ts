@@ -3,7 +3,9 @@ import * as p5 from 'p5';
 import Ship from './js/ship.js';
 import Asteroid from './js/asteroid.js';
 import { input } from './js/input.js';
-import Dust from './js/dust.js'
+import Dust from './js/dust.js';
+import Hud from './js/hud.js';
+// import DigitalFont from '../../assets/digital.tff';
 
 @Component({
   selector: 'app-asteroids',
@@ -33,7 +35,7 @@ export class AsteroidsComponent implements OnInit {
     var boostStabilizer: any = 1;
     var mainFont: any;
     var pts: any;
-    var title: any = true;
+    var title: any = false;
     var stageClear: any = false;
     var score: any = 0;
     var lives: any = 3;
@@ -46,10 +48,12 @@ export class AsteroidsComponent implements OnInit {
       }
     }
 
+    // src\app\asteroids\digital.ttf
 
     const game = (g: any) => {
 
       g.preload = () => {
+        // mainFont = g.loadFont(DigitalFont)
         rgbColor1 = [Math.round(g.random(0, 255)), Math.round(g.random(0, 255)), Math.round(g.random(0, 255))]
         rgbColor2 = [Math.round(g.random(0, 255)), Math.round(g.random(0, 255)), Math.round(g.random(0, 255))]
         rgbColor3 = [Math.round(g.random(0, 255)), Math.round(g.random(0, 255)), Math.round(g.random(0, 255))]
@@ -61,6 +65,11 @@ export class AsteroidsComponent implements OnInit {
       g.setup = () => {
         g.createCanvas(g.windowWidth * .9, g.windowHeight * .9);
         ship = new Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers, addDust);
+        hud = new Hud(g, rgbColor1, rgbColor3, pts);
+        // pts = mainFont.textToPoints('ASTRO-BLASTER', 0, 0, 200, {
+        //   sampleFactor: 0.25,
+        //   simplifyThreshold: 0
+        // });
         spawnAsteroids();
       }
 
@@ -153,6 +162,7 @@ export class AsteroidsComponent implements OnInit {
           dust[i].render();
         }
         ship.render();
+        hud.render(stageClear, level, lives, score, title);
       }
 
       const spawnAsteroids = function () {

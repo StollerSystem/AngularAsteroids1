@@ -59,7 +59,7 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
     lasers.push(laser);
   });
   input.registerAsListener(g.RIGHT_ARROW, function (char, code, press) {
-    title = false;
+    // title = false;
     scope.setRotation(press ? 0.08 : 0);
     // if (press) {
     //   rocketSoundEffects[1].play();
@@ -68,7 +68,7 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
     // }
   });
   input.registerAsListener(g.LEFT_ARROW, function (char, code, press) {
-    title = false;
+    // title = false;
     scope.setRotation(press ? -0.08 : 0);
     // if (press) {
     //   rocketSoundEffects[1].play();
@@ -77,7 +77,7 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
     // }
   });
   input.registerAsListener(g.UP_ARROW, function (char, code, press) {
-    title = false;
+    // title = false;
     scope.setAccel(press ? 0.2 : 0);
     // if (press) {
     //   rocketSoundEffects[0].play();

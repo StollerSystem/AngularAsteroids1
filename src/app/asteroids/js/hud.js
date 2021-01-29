@@ -1,4 +1,4 @@
-function Hud() {
+export default function Hud(g, rgbColor1, rgbColor3, pts) {
   var size = 20;
   var padding = 10;
   var lifeWidth = 20;
@@ -28,55 +28,56 @@ function Hud() {
 
   ];
 
-  this.render = function () {
+  this.render = function (stageClear, level, lives, score, title) {
     var scoreString = "" + score;
-    var x = (width - (scoreString.length * (size + padding))) / 2;
-    var digitPos = createVector(x, padding);
+    var x = (g.width - (scoreString.length * (size + padding))) / 2;
+    var digitPos = g.createVector(x, padding);
     for (var i = 0; i < scoreString.length; i++) {
       var dmap = digitMaps[scoreString.charAt(i)];
       drawDigit(dmap, i, digitPos);
       digitPos.x += size + padding;
     }
 
-    drawLives();
+    drawLives(lives);
 
     if (lives < 0) {
-      push();
-      textSize(150);
-      textFont(mainFont)
-      stroke(`rgba(${rgbColor3[0]},${rgbColor3[1]},${rgbColor3[2]},1)`);
-      strokeWeight(random(1,1.5))
-      fill(0);
-      text("GAME OVER!", (width / 2) - 300, height / 2);
-      pop();
+      g.push();
+      g.textSize(150);
+      // g.textFont(mainFont)
+      g.stroke(`rgba(${rgbColor3[0]},${rgbColor3[1]},${rgbColor3[2]},1)`);
+      g.strokeWeight(g.random(1,1.5))
+      g.fill(0);
+      g.text("GAME OVER!", (g.width / 2) - 300, g.height / 2);
+      g.pop();
     }
 
     if (title) {
-      push();
-      textSize(25);
-      textFont(mainFont)
-      stroke(`rgba(${rgbColor1[0]},${rgbColor1[1]},${rgbColor1[2]},1)`);
-      strokeWeight(random(1,1.5))
-      fill(`rgba(${rgbColor1[0]},${rgbColor1[1]},${rgbColor1[2]},1)`);
-      text("'UP_ARROW: FORWARD THRUST' - 'LEFT/RIGHT_ARROW: ROTATIONAL THRUST' - 'SPACE_BAR: BLASTER'", (width / 2 -410) , height / 3 +50);
-      pop();
+      g.push();
+      g.textSize(25);
+      // g.textFont(mainFont)
+      g.stroke(`rgba(${rgbColor1[0]},${rgbColor1[1]},${rgbColor1[2]},1)`);
+      g.strokeWeight(g.random(1,1.5))
+      g.fill(`rgba(${rgbColor1[0]},${rgbColor1[1]},${rgbColor1[2]},1)`);
+      g.text("'UP_ARROW: FORWARD THRUST' - 'LEFT/RIGHT_ARROW: ROTATIONAL THRUST' - 'SPACE_BAR: BLASTER'", (g.width / 2 -410) , g.height / 3 +50);
+      g.pop();
 
-      push();
-      stroke(`rgba(${rgbColor3[0]},${rgbColor3[1]},${rgbColor3[2]},1)`);
-      strokeWeight(random(1,1.5))
-      translate((width / 2) - 575, height / 3);      
-      noFill();
-      let rotX = sin(frameCount / 20) * 10;
-      let rotY = cos(frameCount / 20) * 10;
-      for (let i = 0; i < pts.length; i++) {
-        line(pts[i].x, pts[i].y, pts[i].x - rotX, pts[i].y - rotY);
-      }
-      textFont(mainFont);
-      textSize(200);
-      text('ASTRO-BLASTER', 0, 0);
-      fill(0);
-      text('ASTRO-BLASTER', -rotX, -rotY);
-      pop();
+      g.push();
+      g.stroke(`rgba(${rgbColor3[0]},${rgbColor3[1]},${rgbColor3[2]},1)`);
+      g.strokeWeight(g.random(1,1.5))
+      g.translate((g.width / 2) - 575, g.height / 3);      
+      g.noFill();
+      let rotX = g.sin(g.frameCount / 20) * 10;
+      let rotY = g.cos(g.frameCount / 20) * 10;
+      //draw the 3d lines
+      // for (let i = 0; i < pts.length; i++) {
+      //   g.line(pts[i].x, pts[i].y, pts[i].x - rotX, pts[i].y - rotY);
+      // }
+      // g.textFont(mainFont);
+      g.textSize(200);
+      g.text('ASTRO-BLASTER', 0, 0);
+      g.fill(0);
+      // g.text('ASTRO-BLASTER', -rotX, -rotY);
+      g.pop();
     }
 
     if (stageClear) {
@@ -85,67 +86,67 @@ function Hud() {
       //   stageSoundEffect.play();
       // }
 
-      push();
-      textSize(100);
-      textFont(mainFont)
-      stroke(`rgba(${rgbColor1[0]},${rgbColor1[1]},${rgbColor1[2]},1)`);
-      strokeWeight(random(2,3))
-      fill(0);
-      text(`STAGE ${level+1} CLEAR!`, (width / 2) - 250, height / 3);
-      pop();
+      g.push();
+      g.textSize(100);
+      // g.textFont(mainFont)
+      g.stroke(`rgba(${rgbColor1[0]},${rgbColor1[1]},${rgbColor1[2]},1)`);
+      g.strokeWeight(g.random(2,3))
+      g.fill(0);
+      g.text(`STAGE ${level+1} CLEAR!`, (g.width / 2) - 250, g.height / 3);
+      g.pop();
     }
   }
 
-  function drawLives() {
-    push();
-    stroke(`rgba(${rgbColor3[0]},${rgbColor3[1]},${rgbColor3[2]},1)`);
-    strokeWeight(random(1,1.5))
-    fill(0);
-    var top = createVector((width / 2) + lifeWidth * 2, padding * 2 + size * 2);
+  function drawLives(lives) {
+    g.push();
+    g.stroke(`rgba(${rgbColor3[0]},${rgbColor3[1]},${rgbColor3[2]},1)`);
+    g.strokeWeight(g.random(1,1.5))
+    g.fill(0);
+    var top = g.createVector((g.width / 2) + lifeWidth * 2, padding * 2 + size * 2);
     for (var i = 0; i < lives; i++) {
-      triangle(top.x, top.y,
+      g.triangle(top.x, top.y,
         top.x - lifeWidth / 2, top.y + 25,
         top.x + lifeWidth / 2, top.y + 25);
       top.x -= 20 + padding;
     }
-    pop();
+    g.pop();
   }
 
   //draws the digit based on the digit map
   function drawDigit(digitMap, index, pos) {
-    push();
-    stroke(`rgba(${rgbColor1[0]},${rgbColor1[1]},${rgbColor1[2]},1)`);
-    strokeWeight(random(1,1.5))
+    g.push();
+    g.stroke(`rgba(${rgbColor1[0]},${rgbColor1[1]},${rgbColor1[2]},1)`);
+    g.strokeWeight(g.random(1,1.5))
     for (var i = 0; i < digitMap.length; i++) {
       if (digitMap[i] === true)
         drawLine(i, pos);
     }
-    pop();
+    g.pop();
   }
 
   //draws a line based on the line map
   function drawLine(lineMap, pos) {
     switch (lineMap) {
       case 0:
-        line(pos.x, pos.y, pos.x + size, pos.y);
+        g.line(pos.x, pos.y, pos.x + size, pos.y);
         break;
       case 1:
-        line(pos.x, pos.y, pos.x, pos.y + size);
+        g.line(pos.x, pos.y, pos.x, pos.y + size);
         break;
       case 2:
-        line(pos.x + size, pos.y, pos.x + size, pos.y + size);
+        g.line(pos.x + size, pos.y, pos.x + size, pos.y + size);
         break;
       case 3:
-        line(pos.x, pos.y + size, pos.x + size, pos.y + size);
+        g.line(pos.x, pos.y + size, pos.x + size, pos.y + size);
         break;
       case 4:
-        line(pos.x, pos.y + size, pos.x, pos.y + 2 * size);
+        g.line(pos.x, pos.y + size, pos.x, pos.y + 2 * size);
         break;
       case 5:
-        line(pos.x + size, pos.y + size, pos.x + size, pos.y + 2 * size);
+        g.line(pos.x + size, pos.y + size, pos.x + size, pos.y + 2 * size);
         break;
       case 6:
-        line(pos.x, pos.y + size * 2, pos.x + size, pos.y + 2 * size);
+        g.line(pos.x, pos.y + size * 2, pos.x + size, pos.y + 2 * size);
         break;
       default:
         console.log("line map is invalid");
