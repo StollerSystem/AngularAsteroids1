@@ -32,7 +32,7 @@ export class AsteroidsComponent implements OnInit {
     var rgbColor1: any;
     var rgbColor2: any;
     var rgbColor3: any;
-    var boostStabilizer: any = 1;
+    // var boostStabilizer: any = 1;
     var mainFont: any;
     var pts: any;
     var title: any = false;
@@ -54,6 +54,18 @@ export class AsteroidsComponent implements OnInit {
 
       g.preload = () => {
         // mainFont = g.loadFont(DigitalFont)
+        // for (var i = 0; i < 3; i++) {
+        //   laserSoundEffects[i] = g.loadSound('audio/laser-' + i + '.wav');
+        // }
+        // for (var i = 0; i < 3; i++) {
+        //   explosionSoundEffects[i] = g.loadSound('audio/explosion-' + i + '.mp3');
+        // }
+        // for (var i = 0; i < 2; i++) {
+        //   rocketSoundEffects[i] = g.loadSound('audio/rocket-' + i + '.wav');
+        // }
+        // stageSoundEffect = g.loadSound('audio/stage-complete.wav')
+
+
         rgbColor1 = [Math.round(g.random(0, 255)), Math.round(g.random(0, 255)), Math.round(g.random(0, 255))]
         rgbColor2 = [Math.round(g.random(0, 255)), Math.round(g.random(0, 255)), Math.round(g.random(0, 255))]
         rgbColor3 = [Math.round(g.random(0, 255)), Math.round(g.random(0, 255)), Math.round(g.random(0, 255))]
@@ -77,7 +89,7 @@ export class AsteroidsComponent implements OnInit {
         // Handles the round loss, destruction of ship and round restart when the
         // ship contacts an asteroid.
         for (var i = 0; i < asteroids.length; i++) {
-          
+
           if (ship.hits(asteroids[i]) && canPlay) {
             canPlay = false;
             var dustVel = p5.Vector.add(ship.vel.mult(0.2), asteroids[i].vel);
