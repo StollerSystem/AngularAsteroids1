@@ -3,6 +3,7 @@ import * as p5 from 'p5';
 import Ship from './js/ship.js';
 import Asteroid from './js/asteroid.js';
 import { input } from './js/input.js';
+import Dust from './js/dust.js'
 
 @Component({
   selector: 'app-asteroids',
@@ -15,7 +16,7 @@ export class AsteroidsComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let ship: any;
+    var ship: any;
     var hud: any
     var asteroids: any = [];
     var lasers: any = [];
@@ -66,16 +67,15 @@ export class AsteroidsComponent implements OnInit {
             lasers.splice(i, 1);
             continue;
           }
-
           for (var j = asteroids.length - 1; j >= 0; j--) {
             if (lasers[i].hits(asteroids[j])) {
               // Handle laser contact with asteroids - handles graphics and sounds -
               // including asteroids that result from being hit.
               // asteroids[j].playSoundEffect(explosionSoundEffects);
               score += points[asteroids[j].size];
-              // var dustVel = p5.Vector.add(lasers[i].vel.mult(0.2), asteroids[j].vel);
-              // var dustNum = (asteroids[j].size * 2 + 1) * 7;
-              // addDust(asteroids[j].pos, dustVel, dustNum);
+              var dustVel = p5.Vector.add(lasers[i].vel.mult(0.2), asteroids[j].vel);
+              var dustNum = (asteroids[j].size * 2 + 1) * 7;
+              addDust(asteroids[j].pos, dustVel, dustNum, .005, 1, 2.5, g);
               // The new smaller asteroids broken lasers are added to the same list
               // of asteroids, so they can be referenced the same way as their full
               // asteroid counterparts.
@@ -86,7 +86,7 @@ export class AsteroidsComponent implements OnInit {
               lasers.splice(i, 1);
               if (asteroids.length == 0) {
                 // Next level
-                stageClear = true
+                stageClear = true;
                 setTimeout(function () {
                   level++;
                   stageClear = false;
@@ -101,13 +101,21 @@ export class AsteroidsComponent implements OnInit {
 
         ship.update();
 
+        // DESTROY DUST
+        for (var i = dust.length - 1; i >= 0; i--) {
+          dust[i].update();
+          if (dust[i].transparency <= 0) {
+            dust.splice(i, 1);
+          }
+        }
+
         // Handles the round loss, destruction of ship and round restart when the
         // ship contacts an asteroid.
         for (var i = 0; i < asteroids.length; i++) {
           if (ship.hits(asteroids[i]) && canPlay) {
             canPlay = false;
             var dustVel = p5.Vector.add(ship.vel.mult(0.2), asteroids[i].vel);
-            // addDust(ship.pos, dustVel, 15, .005, 3);
+            addDust(ship.pos, dustVel, 15, .005, 3, 1, g);
             ship.destroy();
             input.reset();
             // sounds - need to stop rocket sounds here
@@ -134,6 +142,9 @@ export class AsteroidsComponent implements OnInit {
         for (var i = lasers.length - 1; i >= 0; i--) {
           lasers[i].render();
         }
+        for (var i = dust.length - 1; i >= 0; i--) {
+          dust[i].render();
+        }
       }
 
       const spawnAsteroids = function () {
@@ -142,23 +153,11 @@ export class AsteroidsComponent implements OnInit {
         }
       }
 
-      // const cross = function(v1, v2) {
-      //   return v1.x * v2.y - v2.x * v1.y;
-      // }
-
-      // const lineIntersect = function (l1v1, l1v2, l2v1, l2v2) {
-      //   var base = p5.Vector.sub(l1v1, l2v1);
-      //   var l1_vector = p5.Vector.sub(l1v2, l1v1);
-      //   var l2_vector = p5.Vector.sub(l2v2, l2v1);
-      //   var direction_cross = cross(l2_vector, l1_vector);
-      //   var t = cross(base, l1_vector) / direction_cross;
-      //   var u = cross(base, l2_vector) / direction_cross;
-      //   if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
-      //     return true;
-      //   } else {
-      //     return false;
-      //   }
-      // }
+      const addDust = function (pos, vel, n, trans, color, weight, g) {
+        for (var i = 0; i < n; i++) {
+          dust.push(new Dust(pos, vel, trans, color, weight, g, rgbColor1, rgbColor2, rgbColor3));
+        }
+      }
     };
 
     let canvas = new p5(game);
