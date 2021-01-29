@@ -66,6 +66,37 @@ export class AsteroidsComponent implements OnInit {
             lasers.splice(i, 1);
             continue;
           }
+
+          for (var j = asteroids.length - 1; j >= 0; j--) {
+            if (lasers[i].hits(asteroids[j])) {
+              // Handle laser contact with asteroids - handles graphics and sounds -
+              // including asteroids that result from being hit.
+              // asteroids[j].playSoundEffect(explosionSoundEffects);
+              score += points[asteroids[j].size];
+              // var dustVel = p5.Vector.add(lasers[i].vel.mult(0.2), asteroids[j].vel);
+              // var dustNum = (asteroids[j].size * 2 + 1) * 7;
+              // addDust(asteroids[j].pos, dustVel, dustNum);
+              // The new smaller asteroids broken lasers are added to the same list
+              // of asteroids, so they can be referenced the same way as their full
+              // asteroid counterparts.
+              var newAsteroids = asteroids[j].breakup();
+              asteroids = asteroids.concat(newAsteroids);
+              // Laser and previous asteroid are removed as per the rules of the game.
+              asteroids.splice(j, 1);
+              lasers.splice(i, 1);
+              if (asteroids.length == 0) {
+                // Next level
+                stageClear = true
+                setTimeout(function () {
+                  level++;
+                  stageClear = false;
+                  spawnAsteroids();
+                  ship.shields = shieldTime;
+                }, 4000)
+              }
+              break;
+            }
+          }
         }
 
         ship.update();
@@ -110,6 +141,24 @@ export class AsteroidsComponent implements OnInit {
           asteroids.push(new Asteroid(null, null, 3, g, rgbColor1));
         }
       }
+
+      // const cross = function(v1, v2) {
+      //   return v1.x * v2.y - v2.x * v1.y;
+      // }
+
+      // const lineIntersect = function (l1v1, l1v2, l2v1, l2v2) {
+      //   var base = p5.Vector.sub(l1v1, l2v1);
+      //   var l1_vector = p5.Vector.sub(l1v2, l1v1);
+      //   var l2_vector = p5.Vector.sub(l2v2, l2v1);
+      //   var direction_cross = cross(l2_vector, l1_vector);
+      //   var t = cross(base, l1_vector) / direction_cross;
+      //   var u = cross(base, l2_vector) / direction_cross;
+      //   if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+      //     return true;
+      //   } else {
+      //     return false;
+      //   }
+      // }
     };
 
     let canvas = new p5(game);

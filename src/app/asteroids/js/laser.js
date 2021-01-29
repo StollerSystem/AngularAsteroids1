@@ -1,5 +1,6 @@
 import * as p5 from 'p5';
 import Entity from './entity';
+import { lineIntersect } from './utility'
 
 export default function Laser(spos, svel, angle, g, rgbColor2) {  
   
@@ -20,7 +21,7 @@ export default function Laser(spos, svel, angle, g, rgbColor2) {
     // glow effect
     g.push();
     var size = this.r * (g.random(2, 10))
-    var trans2 = g.random(.6, .1)
+    var trans2 = g.random(.4, .05)
     g.stroke(`rgba(${rgbColor2[0]},${rgbColor2[1]},${rgbColor2[2]},${trans2}) `);
     g.strokeWeight(size);
     g.point(this.pos.x, this.pos.y);
@@ -35,7 +36,7 @@ export default function Laser(spos, svel, angle, g, rgbColor2) {
     // Evaluate if the asteroid was hit based on the range of the laser if one
     // of these conditions hold, then there is no need to check that the laser
     // intersected the asteroid.
-    dist2 = (this.pos.x - asteroid.pos.x) * (this.pos.x - asteroid.pos.x)
+    let dist2 = (this.pos.x - asteroid.pos.x) * (this.pos.x - asteroid.pos.x)
       + (this.pos.y - asteroid.pos.y) * (this.pos.y - asteroid.pos.y);
     if (dist2 <= asteroid.rmin2) {
       return true;

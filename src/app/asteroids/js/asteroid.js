@@ -30,10 +30,10 @@ export default function Asteroid(pos, r, size, g, rgbColor1) {
   }
 
   // Calculate minimum and maximum radii squared
-  this.rmin = this.r + g.min(this.offset);
-  this.rmin2 = this.rmin * this.rmin;
-  this.rmax = this.r + g.max(this.offset);
-  this.rmax2 = this.rmax * this.rmax;
+  // this.rmin = this.r + g.min(this.offset);
+  // this.rmin2 = this.rmin * this.rmin;
+  // this.rmax = this.r + g.max(this.offset);
+  // this.rmax2 = this.rmax * this.rmax;
 
   Entity.prototype.setRotation.call(this, g.random(-0.03, 0.03));
 
@@ -61,8 +61,8 @@ export default function Asteroid(pos, r, size, g, rgbColor1) {
   this.breakup = function() {
     if(size > 0)
       return [
-        new Asteroid(this.pos, this.r, this.size-1, g, rbgColor1),
-        new Asteroid(this.pos, this.r, this.size-1, g, rbgColor1)
+        new Asteroid(this.pos, this.r, this.size-1, g, rgbColor1),
+        new Asteroid(this.pos, this.r, this.size-1, g, rgbColor1)
       ];
     else
       return [];
@@ -71,7 +71,7 @@ export default function Asteroid(pos, r, size, g, rgbColor1) {
   this.vertices = function() {
     var vertices = []
     for(var i = 0; i < this.total; i++) {
-      var angle = this.heading + g.map(i, 0, this.total, 0, TWO_PI);
+      var angle = this.heading + g.map(i, 0, this.total, 0, g.TWO_PI);
       var r = this.r + this.offset[i];
       var vec = g.createVector(r * g.cos(angle), r * g.sin(angle));
       vertices.push(p5.Vector.add(vec, this.pos));
