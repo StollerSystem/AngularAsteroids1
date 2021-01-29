@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import * as p5 from 'p5';
-import Ship from './js/ship.js'
+import Ship from './js/ship.js';
+import Asteroid from './js/asteroid.js';
+import { input } from './js/input.js';
 
 @Component({
   selector: 'app-asteroids',
@@ -52,6 +54,7 @@ export class AsteroidsComponent implements OnInit {
       g.setup = () => {
         g.createCanvas(g.windowWidth * .9, g.windowHeight * .9);
         ship = new Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers);
+        spawnAsteroids();
       }
 
       g.draw = () => {
@@ -67,11 +70,44 @@ export class AsteroidsComponent implements OnInit {
 
         ship.update();
 
+        // Handles the round loss, destruction of ship and round restart when the
+        // ship contacts an asteroid.
+        for (var i = 0; i < asteroids.length; i++) {
+          if (ship.hits(asteroids[i]) && canPlay) {
+            canPlay = false;
+            var dustVel = p5.Vector.add(ship.vel.mult(0.2), asteroids[i].vel);
+            // addDust(ship.pos, dustVel, 15, .005, 3);
+            ship.destroy();
+            input.reset();
+            // sounds - need to stop rocket sounds here
+            ship.playSoundEffect(explosionSoundEffects);
+            rocketSoundEffects[0].stop();
+            rocketSoundEffects[1].stop();
+            setTimeout(function () {
+              lives--;
+              if (lives >= 0) {
+                ship = new Ship();
+                canPlay = true;
+              }
+            }, 3000);
+          }
+          asteroids[i].update();
+        }
+
         // renders
         g.background(0);
         ship.render();
+        for (var i = 0; i < asteroids.length; i++) {
+          asteroids[i].render();
+        }
         for (var i = lasers.length - 1; i >= 0; i--) {
           lasers[i].render();
+        }
+      }
+
+      const spawnAsteroids = function () {
+        for (var i = 0; i < level + 1; i++) {
+          asteroids.push(new Asteroid(null, null, 3, g, rgbColor1));
         }
       }
     };

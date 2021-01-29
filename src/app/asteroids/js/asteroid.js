@@ -1,13 +1,16 @@
-function Asteroid(pos, r, size) {
+import * as p5 from 'p5';
+import Entity from './entity';
+
+export default function Asteroid(pos, r, size, g, rgbColor1) {
   if (pos == null) {
-    pos = createVector(random(width), random(height));
+    pos = g.createVector(g.random(g.width), g.random(g.height));
   }
 
-  r = r != null ? r * 0.5 : random(80, 105);
-  Entity.call(this, pos.x, pos.y, r);
+  r = r != null ? r * 0.5 : g.random(80, 105);
+  Entity.call(this, pos.x, pos.y, r, g);
 
   this.vel = p5.Vector.random2D();
-  this.total = floor(random(7, 15));
+  this.total = g.floor(g.random(7, 15));
 
   //smaller asteroids go a bit faster
   this.size = size;
@@ -23,32 +26,32 @@ function Asteroid(pos, r, size) {
 
   this.offset = [];
   for (var i = 0; i < this.total; i++) {
-    this.offset[i] = random(-this.r * 0.2, this.r * 0.5);
+    this.offset[i] = g.random(-this.r * 0.2, this.r * 0.5);
   }
 
   // Calculate minimum and maximum radii squared
-  this.rmin = this.r + min(this.offset);
+  this.rmin = this.r + g.min(this.offset);
   this.rmin2 = this.rmin * this.rmin;
-  this.rmax = this.r + max(this.offset);
+  this.rmax = this.r + g.max(this.offset);
   this.rmax2 = this.rmax * this.rmax;
 
-  Entity.prototype.setRotation.call(this, random(-0.03, 0.03));
+  Entity.prototype.setRotation.call(this, g.random(-0.03, 0.03));
 
   this.render = function() {
-    push();
-    stroke(`rgba(${rgbColor1[0]},${rgbColor1[1]},${rgbColor1[2]},1)`);
-    strokeWeight(random(1,1.5))
-    noFill();
-    translate(this.pos.x, this.pos.y);
-    rotate(this.heading);
-    beginShape();
+    g.push();
+    g.stroke(`rgba(${rgbColor1[0]},${rgbColor1[1]},${rgbColor1[2]},1)`);
+    g.strokeWeight(g.random(1,1.5))
+    g.noFill();
+    g.translate(this.pos.x, this.pos.y);
+    g.rotate(this.heading);
+    g.beginShape();
     for (var i = 0; i < this.total; i++) {
-      var angle = map(i, 0, this.total, 0, TWO_PI);
+      var angle = g.map(i, 0, this.total, 0, g.TWO_PI);
       var r = this.r + this.offset[i];
-      vertex(r * cos(angle), r * sin(angle));
+      g.vertex(r * g.cos(angle), r * g.sin(angle));
     }
-    endShape(CLOSE);
-    pop();
+    g.endShape(g.CLOSE);
+    g.pop();
   }
 
   this.playSoundEffect = function(soundArray){
@@ -58,8 +61,8 @@ function Asteroid(pos, r, size) {
   this.breakup = function() {
     if(size > 0)
       return [
-        new Asteroid(this.pos, this.r, this.size-1),
-        new Asteroid(this.pos, this.r, this.size-1)
+        new Asteroid(this.pos, this.r, this.size-1, g, rbgColor1),
+        new Asteroid(this.pos, this.r, this.size-1, g, rbgColor1)
       ];
     else
       return [];
@@ -68,9 +71,9 @@ function Asteroid(pos, r, size) {
   this.vertices = function() {
     var vertices = []
     for(var i = 0; i < this.total; i++) {
-      var angle = this.heading + map(i, 0, this.total, 0, TWO_PI);
+      var angle = this.heading + g.map(i, 0, this.total, 0, TWO_PI);
       var r = this.r + this.offset[i];
-      var vec = createVector(r * cos(angle), r * sin(angle));
+      var vec = g.createVector(r * g.cos(angle), r * g.sin(angle));
       vertices.push(p5.Vector.add(vec, this.pos));
     }
 
