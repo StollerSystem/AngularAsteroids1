@@ -2,13 +2,14 @@ import * as p5 from 'p5';
 import Entity from './entity';
 import { lineIntersect } from './utility';
 
-export default function Laser(spos, svel, angle, g, rgbColor2) {  
+export default function Laser(spos, svel, angle, g, rgbColor2, enemy) {  
   
   Entity.call(this, spos.x, spos.y, 4, g);
   this.pos = g.createVector(spos.x, spos.y);
   this.vel = p5.Vector.fromAngle(angle);
   this.vel.mult(10);
   this.vel.add(svel);  
+  this.enemy = enemy ? enemy : false;
 
   this.render = function () {
     // laser bolt

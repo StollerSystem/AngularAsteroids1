@@ -140,8 +140,9 @@ export class AsteroidsComponent implements OnInit {
           asteroids[i].update();
         }
 
-        //updates
+        //UPDATES ALL LASERS AND CHECKS FOR ALL COLLISIONS
         for (var i = lasers.length - 1; i >= 0; i--) {
+          var exists = true;
           lasers[i].update();
           if (lasers[i].offscreen()) {
             // destroy lasers that go off screen.
@@ -150,10 +151,14 @@ export class AsteroidsComponent implements OnInit {
           }
           for (var j = asteroids.length - 1; j >= 0; j--) {
             if (lasers[i].hits(asteroids[j])) {
+              exists = false;
               // Handle laser contact with asteroids - handles graphics and sounds -
               // including asteroids that result from being hit.
               // asteroids[j].playSoundEffect(explosionSoundEffects);
-              score += points[asteroids[j].size];
+
+              if (!lasers[i].enemy) {
+                score += points[asteroids[j].size];
+              }
               var dustVel = p5.Vector.add(lasers[i].vel.mult(0.2), asteroids[j].vel);
               var dustNum = (asteroids[j].size * 2 + 1) * 7;
               addDust(asteroids[j].pos, dustVel, dustNum, .005, 1, 2.5, g);
@@ -170,12 +175,55 @@ export class AsteroidsComponent implements OnInit {
                 stageClear = true;
                 setTimeout(function () {
                   level++;
+                  possibleEnemies += level;
                   stageClear = false;
                   spawnAsteroids();
                   ship.shields = shieldTime;
                 }, 4000)
               }
               break;
+            }
+          }
+
+          // check enemies + laser collision
+          if (exists) {
+            for (var k = enemies.length - 1; k >= 0; k--) {
+              if (lasers[i].hits(enemies[k]) && !lasers[i].enemy) {
+                exists = false;
+                score += 500;
+                // enemies[k].destroy();
+                let dustVel = p5.Vector.add(lasers[i].vel.mult(0.5), enemies[k].vel);
+                addDust(enemies[k].pos, dustVel, 10, .01, 2, 3, g);
+                // addDebris(enemies[k].pos, enemies[k].vel, 10, 30);
+                addDust
+                enemies.splice(j, 1);
+                lasers.splice(i, 1);
+                break;
+              }
+            }
+          }
+
+          // check player + laser collision     
+          if (exists) {
+            // console.log(lasers[i].hits(ship))
+            if (lasers[i].hits(ship) && lasers[i].enemy && canPlay) {
+              canPlay = false;
+              var dustVel = p5.Vector.add(ship.vel.mult(0.2), lasers[i].vel.mult(.2));
+              lasers.splice(i, 1);
+              addDust(ship.pos, dustVel, 15, .005, 3, 2.5, g);
+              ship.destroy();
+              input.reset();
+              // sounds - need to stop rocket sounds here
+              // ship.playSoundEffect(explosionSoundEffects);
+              // rocketSoundEffects[0].stop();
+              // rocketSoundEffects[1].stop();
+              setTimeout(function () {
+                lives--;
+                if (lives >= 0) {
+                  ship = new Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers, addDust);
+                  canPlay = true;
+                }
+              }, 3000);
             }
           }
         }
@@ -188,13 +236,13 @@ export class AsteroidsComponent implements OnInit {
             ship.destroy();
             input.reset();
             // sounds - need to stop rocket sounds here
-            ship.playSoundEffect(explosionSoundEffects);
-            rocketSoundEffects[0].stop();
-            rocketSoundEffects[1].stop();
+            // ship.playSoundEffect(explosionSoundEffects);
+            // rocketSoundEffects[0].stop();
+            // rocketSoundEffects[1].stop();
             setTimeout(function () {
               lives--;
               if (lives >= 0) {
-                ship = new Ship();
+                ship = new Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, lasers, addDust);
                 canPlay = true;
               }
             }, 3000);

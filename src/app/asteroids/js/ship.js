@@ -46,7 +46,7 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
       return;
     }
     title = false;
-    var laser = new Laser(scope.pos, scope.vel, scope.heading, g, rgbColor2);
+    var laser = new Laser(scope.pos, scope.vel, scope.heading, g, rgbColor2, false);
     if (score > 0) {
       score -= 5;
     }
@@ -154,20 +154,21 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
     }
 
     // Otherwise, we need to check for line intersection
-    var vertices = [
+    var shipVertices = [
       g.createVector(-2 / 3 * this.r, this.r).rotate(this.heading),
       g.createVector(-2 / 3 * this.r, -this.r).rotate(this.heading),
       g.createVector(4 / 3 * this.r, 0).rotate(this.heading)
     ];
-    for (var i = 0; i < vertices.length; i++) {
-      vertices[i] = p5.Vector.add(vertices[i], this.pos);
+
+    for (var i = 0; i < shipVertices.length; i++) {
+      shipVertices[i] = p5.Vector.add(shipVertices[i], this.pos);
     }
     var asteroid_vertices = asteroid.vertices();
 
     for (var i = 0; i < asteroid_vertices.length; i++) {
-      for (var j = 0; j < vertices.length; j++) {
+      for (var j = 0; j < shipVertices.length; j++) {
         var next_i = (i + 1) % asteroid_vertices.length;
-        if (lineIntersect(vertices[j], vertices[(j + 1) % vertices.length],
+        if (lineIntersect(shipVertices[j], shipVertices[(j + 1) % shipVertices.length],
           asteroid_vertices[i], asteroid_vertices[next_i])) {
           
           return true;
@@ -178,7 +179,16 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
   }
 
   this.playSoundEffect = function(soundArray){
-    soundArray[g.floor(random(0,soundArray.length))].play();
+    // soundArray[g.floor(g.random(0,soundArray.length))].play();
+  }
+
+  this.vertices = function () {
+    var shipVertices = [
+      p5.Vector.add(g.createVector(-this.r, this.r),this.pos),
+      p5.Vector.add(g.createVector(-this.r, -this.r),this.pos),
+      p5.Vector.add(g.createVector(4 / 3 * this.r, 0),this.pos)
+    ]
+    return shipVertices;
   }
 
   this.render = function () {
