@@ -6,6 +6,7 @@ import Enemy from './js/enemy.js'
 import { input } from './js/input.js';
 import Dust from './js/dust.js';
 import Hud from './js/hud.js';
+import Debris from './js/debris.js';
 // import { addDust } from './js/utility.js'
 // import DigitalFont from '../../assets/digital.tff';
 
@@ -52,6 +53,11 @@ export class AsteroidsComponent implements OnInit {
       for (var i = 0; i < n; i++) {
         dust.push(new Dust(pos, vel, trans, color, weight, g, rgbColor1, rgbColor2, rgbColor3));
       }
+    }
+
+    function addDebris(pos, vel, n, r, g, rgbColor4) {
+      debris.push(new Debris(pos, vel, n, r, g, rgbColor4));
+      // console.log(debris)
     }
 
     // src\app\asteroids\digital.ttf
@@ -194,7 +200,7 @@ export class AsteroidsComponent implements OnInit {
                 // enemies[k].destroy();
                 let dustVel = p5.Vector.add(lasers[i].vel.mult(0.5), enemies[k].vel);
                 addDust(enemies[k].pos, dustVel, 10, .01, 2, 3, g);
-                // addDebris(enemies[k].pos, enemies[k].vel, 10, 30);
+                addDebris(enemies[k].pos, enemies[k].vel, 10, 30, g, rgbColor4);
                 addDust
                 enemies.splice(j, 1);
                 lasers.splice(i, 1);
@@ -252,7 +258,7 @@ export class AsteroidsComponent implements OnInit {
 
         ship.update();
 
-        // DESTROY DUST
+        // UPDATE AND DESTROY DUST
         for (var i = dust.length - 1; i >= 0; i--) {
           dust[i].update();
           if (dust[i].transparency <= 0) {
@@ -260,7 +266,13 @@ export class AsteroidsComponent implements OnInit {
           }
         }
 
-
+        // UPDATE AND DESTROY DEBRIS
+        for (var i = debris.length - 1; i >= 0; i--) {
+          debris[i].update();
+          if (debris[i].destroyFrames <= 0) {
+            debris.splice(i, 1);
+          }
+        }
 
         // renders
         g.background(0);

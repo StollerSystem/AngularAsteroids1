@@ -1,13 +1,13 @@
 import * as p5 from 'p5';
 
-function Debris(pos, vel, n, r, g) {
+export default function Debris(pos, vel, n, r, g, rgbColor4) {
 
   this.destroyFrames = 1300;
   this.r = r
   this.pos = pos.copy();
   this.vel = vel.copy();
   this.debrisParts = [];
-
+  
   for (var i = 0; i < n; i++)
     this.debrisParts[i] = {
       pos: this.pos.copy(),
@@ -48,7 +48,7 @@ function Debris(pos, vel, n, r, g) {
 
 }
 
-function addDebris(pos, vel, n, r) {  
-  debris.push(new Debris(pos, vel, n, r, g));  
-  // console.log(debris)
-}
+// function addDebris(pos, vel, n, r) {  
+//   debris.push(new Debris(pos, vel, n, r, g));  
+//   // console.log(debris)
+// }

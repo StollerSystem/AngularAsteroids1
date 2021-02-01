@@ -11,25 +11,22 @@ export default function Enemy(r, g, addDust, level, rgbColor4, rgbColor2, lasers
     g.createVector(g.random(g.width), g.height + r),
     g.createVector(-r, g.random(g.height))
   ]
+  var pos = outOfBounds[g.floor(g.random(0, 4))]  
 
-  var pos = outOfBounds[g.floor(g.random(0, 4))]
-  // console.log(pos)
   Entity.call(this, pos.x, pos.y, r, g)
+
   this.crazyness = g.random(1, 2 + level / 4);
-  this.shotThresh = g.random(1, 1.5 + level / 5);
-  // this.crazyness = 10;
+  this.shotThresh = g.random(1, 1.5 + level / 5);  
   this.point = g.random(1, 2);
   this.vel = p5.Vector.random2D();
   this.vel.mult(4);
-  this.rotation = g.random(.03, .1);
-  // this.isDestroyed = false;
-  // this.destroyFrames = 1000;
+  this.rotation = g.random(.03, .1);  
 
   this.update = function () {
-
-    Entity.prototype.update.call(this);
+    Entity.prototype.update.call(this);    
     var changeCourse = g.random(1, 100)
     var shoot = g.random(1, 25)
+    // ENEMY AI
     if (changeCourse <= this.crazyness) {
       this.setAccel(1)
       this.vel = p5.Vector.random2D();
@@ -40,13 +37,6 @@ export default function Enemy(r, g, addDust, level, rgbColor4, rgbColor2, lasers
     if (shoot <= this.shotThresh) {
       this.shootLaser();
     }
-    // if (this.isDestroyed) {
-    //   for (var i = 0; i < this.brokenParts.length; i++) {
-    //     this.brokenParts[i].pos.add(this.brokenParts[i].vel);
-    //     this.brokenParts[i].heading += this.brokenParts[i].rot;
-    //   }
-    // }
-
   }
 
   var scope = this;
@@ -57,22 +47,7 @@ export default function Enemy(r, g, addDust, level, rgbColor4, rgbColor2, lasers
     lasers.push(laser);
   }
 
-  this.render = function () {
-
-    // if (this.isDestroyed) {
-    //   // ship debris
-    //   for (var i = 0; i < this.brokenParts.length; i++) {
-    //     push();
-    //     let transNum = (1 * ((this.destroyFrames--) / 1000))
-    //     let trans = transNum > 0 ? transNum : 0;
-    //     stroke(`rgba(${rgbColor4[0]},${rgbColor4[1]},${rgbColor4[2]},${trans})`);
-    //     var bp = this.brokenParts[i];
-    //     translate(bp.pos.x, bp.pos.y);
-    //     rotate(bp.heading);
-    //     line(-this.r / 2, -this.r / 2, this.r / 2, this.r / 2);
-    //     pop();
-    //   }
-    // } else {
+  this.render = function () {    
     g.push();
     g.translate(this.pos.x, this.pos.y);
     g.rotate(this.heading);
