@@ -2,6 +2,7 @@ import * as p5 from 'p5';
 
 export default function Entity(x, y, radius, g)
 {
+  // console.log(x)
   this.g = g;
   this.pos = g.createVector(x, y);
   this.r = radius;

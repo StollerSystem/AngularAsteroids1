@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import * as p5 from 'p5';
 import Ship from './js/ship.js';
 import Asteroid from './js/asteroid.js';
+import Enemy from './js/enemy.js'
 import { input } from './js/input.js';
 import Dust from './js/dust.js';
 import Hud from './js/hud.js';
+// import { addDust } from './js/utility.js'
 // import DigitalFont from '../../assets/digital.tff';
 
 @Component({
@@ -22,6 +24,9 @@ export class AsteroidsComponent implements OnInit {
     var hud: any
     var asteroids: any = [];
     var lasers: any = [];
+    var enemies = [];
+    var debris = [];
+    var possibleEnemies = 1;
     var laserSoundEffects: any = [];
     var explosionSoundEffects: any = [];
     var rocketSoundEffects: any = [];
@@ -32,6 +37,7 @@ export class AsteroidsComponent implements OnInit {
     var rgbColor1: any;
     var rgbColor2: any;
     var rgbColor3: any;
+    var rgbColor4: any;
     // var boostStabilizer: any = 1;
     var mainFont: any;
     var pts: any;
@@ -66,12 +72,25 @@ export class AsteroidsComponent implements OnInit {
         // stageSoundEffect = g.loadSound('audio/stage-complete.wav')
 
 
-        rgbColor1 = [Math.round(g.random(0, 255)), Math.round(g.random(0, 255)), Math.round(g.random(0, 255))]
-        rgbColor2 = [Math.round(g.random(0, 255)), Math.round(g.random(0, 255)), Math.round(g.random(0, 255))]
-        rgbColor3 = [Math.round(g.random(0, 255)), Math.round(g.random(0, 255)), Math.round(g.random(0, 255))]
+        let ran1 = Math.round(g.random(1, 3))
+        let c1a = ran1 === 1 ? 0 : 255;
+        let c1b = ran1 === 2 ? 0 : 255;
+        let c1c = ran1 === 3 ? 0 : 255;
+        rgbColor1 = [Math.round(g.random(0, c1a)), Math.round(g.random(0, c1b)), Math.round(g.random(0, c1c))]
+
+        let c2a = ran1 === 3 ? 0 : 255;
+        let c2b = ran1 === 1 ? 0 : 255;
+        let c2c = ran1 === 2 ? 0 : 255;
+        rgbColor2 = [Math.round(g.random(0, c2a)), Math.round(g.random(0, c2b)), Math.round(g.random(0, c2c))]
+        let c3a = ran1 === 2 ? 0 : 255;
+        let c3b = ran1 === 3 ? 0 : 255;
+        let c3c = ran1 === 1 ? 0 : 255;
+        rgbColor3 = [Math.round(g.random(0, c3a)), Math.round(g.random(0, c3b)), Math.round(g.random(0, c3c))]
+        rgbColor4 = [Math.round(g.random(0, 255)), Math.round(g.random(0, 255)), Math.round(g.random(0, 255))]
         console.log(rgbColor1)
         console.log(rgbColor2)
         console.log(rgbColor3)
+        console.log(rgbColor4)
       }
 
       g.setup = () => {
@@ -86,6 +105,16 @@ export class AsteroidsComponent implements OnInit {
       }
 
       g.draw = () => {
+
+        // RANDOM ENEMY SPAWN
+        if (!title && !stageClear && possibleEnemies > 0 && enemies.length < 1) {
+          let ranNum = g.random(1000);
+          if (ranNum <= 1) {
+            spawnEnemy();
+            possibleEnemies--;
+          }
+        }
+
         // Handles the round loss, destruction of ship and round restart when the
         // ship contacts an asteroid.
         for (var i = 0; i < asteroids.length; i++) {
@@ -110,6 +139,7 @@ export class AsteroidsComponent implements OnInit {
           }
           asteroids[i].update();
         }
+
         //updates
         for (var i = lasers.length - 1; i >= 0; i--) {
           lasers[i].update();
@@ -150,6 +180,28 @@ export class AsteroidsComponent implements OnInit {
           }
         }
 
+        for (var i = enemies.length - 1; i >= 0; i--) {
+          if (ship.hits(enemies[i]) && canPlay) {
+            canPlay = false;
+            var dustVel = p5.Vector.add(ship.vel.mult(0.2), asteroids[i].vel);
+            addDust(ship.pos, dustVel, 15, .005, 3, 2.5, g);
+            ship.destroy();
+            input.reset();
+            // sounds - need to stop rocket sounds here
+            ship.playSoundEffect(explosionSoundEffects);
+            rocketSoundEffects[0].stop();
+            rocketSoundEffects[1].stop();
+            setTimeout(function () {
+              lives--;
+              if (lives >= 0) {
+                ship = new Ship();
+                canPlay = true;
+              }
+            }, 3000);
+          }
+          enemies[i].update();
+        }
+
         ship.update();
 
         // DESTROY DUST
@@ -173,6 +225,12 @@ export class AsteroidsComponent implements OnInit {
         for (var i = dust.length - 1; i >= 0; i--) {
           dust[i].render();
         }
+        for (var i = debris.length - 1; i >= 0; i--) {
+          debris[i].render();
+        }
+        for (var i = enemies.length - 1; i >= 0; i--) {
+          enemies[i].render();
+        }
         ship.render();
         hud.render(stageClear, level, lives, score, title);
       }
@@ -181,6 +239,11 @@ export class AsteroidsComponent implements OnInit {
         for (var i = 0; i < level + 1; i++) {
           asteroids.push(new Asteroid(null, null, 3, g, rgbColor1));
         }
+      }
+
+      function spawnEnemy() {
+        var radius = g.random(20, 30)
+        enemies.push(new Enemy(radius, g, addDust, level, rgbColor4, rgbColor2, lasers))
       }
 
     };

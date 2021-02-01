@@ -128,7 +128,7 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
     for (var i = 0; i < 6; i++)
       this.brokenParts[i] = {
         pos: this.pos.copy(),
-        vel: p5.Vector.random2D(),
+        vel: this.vel.copy().add(p5.Vector.random2D().mult(g.random(1,1.8))),
         heading: g.random(0, 360),
         rot: g.random(-0.07, 0.07)
       };
@@ -178,7 +178,7 @@ export default function Ship(g, shieldTime, rgbColor2, rgbColor3, title, score, 
   }
 
   this.playSoundEffect = function(soundArray){
-    soundArray[floor(random(0,soundArray.length))].play();
+    soundArray[g.floor(random(0,soundArray.length))].play();
   }
 
   this.render = function () {
